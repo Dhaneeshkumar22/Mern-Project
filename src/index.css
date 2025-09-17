@@ -1,0 +1,274 @@
+/* === 3D Expense Tracker Theme (CSS only) === */
+
+/* -------- Tokens -------- */
+:root{
+  --bg-1: #0f1220;          /* page background */
+  --bg-2: #151935;          /* surfaces */
+  --glass: rgba(255,255,255,.06);
+
+  --text: #e7e9f3;
+  --muted: #a9b0c7;
+  --accent: #7aa2ff;
+  --income: #41d392;
+  --expense: #ff6b7a;
+  --warning: #ffd166;
+
+  --radius-xl: 24px;
+  --radius-lg: 18px;
+  --radius: 14px;
+
+  --shadow-1: 0 10px 18px rgba(0,0,0,.35),
+              0 2px 4px rgba(0,0,0,.35) inset,
+              0 -1px 0 rgba(255,255,255,.05) inset;
+  --shadow-2: 0 18px 40px rgba(0,0,0,.45);
+  --glass-border: 1px solid rgba(255,255,255,.12);
+
+  --ring: 0 0 0 3px rgba(122,162,255,.25);
+  --trans: .25s cubic-bezier(.2,.7,.2,1);
+}
+
+/* Optional dark-mode sync */
+@media (prefers-color-scheme: light) {
+  :root{
+    --bg-1: #eef2ff;
+    --bg-2: #ffffff;
+    --glass: rgba(0,0,0,.06);
+    --text: #121429;
+    --muted: #6a6f87;
+    --shadow-1: 0 10px 18px rgba(17,24,39,.12),
+                0 2px 4px rgba(255,255,255,.6) inset,
+                0 -1px 0 rgba(0,0,0,.04) inset;
+    --shadow-2: 0 18px 40px rgba(17,24,39,.16);
+    --glass-border: 1px solid rgba(17,24,39,.08);
+    --ring: 0 0 0 3px rgba(90,120,255,.25);
+  }
+}
+
+/* -------- Page & layout -------- */
+* { box-sizing: border-box }
+html,body { height: 100% }
+body{
+  margin: 0;
+  color: var(--text);
+  background:
+    radial-gradient(1200px 600px at 10% -10%, #2a315d33 0%, transparent 60%),
+    radial-gradient(1000px 500px at 110% 10%, #1e244b33 0%, transparent 55%),
+    linear-gradient(160deg, var(--bg-1), #0a0d1a 60%);
+  font: 500 16px/1.45 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+}
+
+/* Subtle grid to sell the 3D space */
+body::before{
+  content:"";
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(transparent 31px, #ffffff0a 32px),
+    linear-gradient(90deg, transparent 31px, #ffffff0a 32px);
+  background-size: 32px 32px;
+  pointer-events: none;
+}
+
+.app{
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 24px;
+  min-height: 100dvh;
+  padding: 28px;
+}
+
+/* -------- Glassy sidebar -------- */
+.sidebar{
+  background: linear-gradient(180deg, var(--glass), transparent 120%);
+  backdrop-filter: blur(12px) saturate(120%);
+  border: var(--glass-border);
+  box-shadow: var(--shadow-2);
+  border-radius: var(--radius-xl);
+  padding: 22px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+
+/* Sidebar items */
+.nav-item{
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #ffffff07, #0000001a);
+  box-shadow: 0 1px 0 #ffffff10 inset, 0 -1px 0 #0000002b inset, 0 10px 18px #0000004d;
+  transform: translateZ(0);
+  transition: transform var(--trans), box-shadow var(--trans), background var(--trans);
+  cursor: pointer;
+}
+.nav-item:hover{ transform: translateY(-2px) }
+.nav-item.active{
+  background:
+    linear-gradient(180deg, #ffffff10, #00000022),
+    radial-gradient(120% 120% at 10% 0%, #7aa2ff22, transparent 60%);
+  box-shadow: 0 2px 0 #ffffff10 inset, 0 -1px 0 #0000002b inset, 0 14px 26px #00000066, 0 0 0 1px #7aa2ff55;
+}
+
+/* -------- Header (glow + depth) -------- */
+.header{
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 22px;
+  background: linear-gradient(180deg, #ffffff0a, #00000030);
+  border: var(--glass-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-2);
+}
+.header .title{
+  font-size: 22px; letter-spacing: .3px;
+  text-shadow: 0 2px 18px #7aa2ff33, 0 0 1px #7aa2ff77;
+}
+
+/* -------- 3D cards -------- */
+.grid{
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 18px;
+}
+.col-3{ grid-column: span 3 }
+.col-4{ grid-column: span 4 }
+.col-6{ grid-column: span 6 }
+.col-8{ grid-column: span 8 }
+.col-12{ grid-column: span 12 }
+
+.card{
+  position: relative;
+  background: linear-gradient(180deg, var(--bg-2), #0b0f26);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-2);
+  padding: 18px;
+  transform-style: preserve-3d;
+  transition: transform var(--trans), box-shadow var(--trans), background var(--trans);
+  border: 1px solid #ffffff0e;
+  overflow: hidden;
+}
+
+/* soft 3D lighting */
+.card::after{
+  content:"";
+  position:absolute; inset:-1px;
+  border-radius: inherit;
+  background:
+    radial-gradient(60% 80% at 10% 0%, #7aa2ff22, transparent 60%),
+    radial-gradient(60% 80% at 90% 20%, #41d39222, transparent 70%);
+  pointer-events:none;
+}
+
+/* hover tilt */
+.card:hover{
+  transform: perspective(900px) rotateX(6deg) rotateY(-6deg) translateY(-2px);
+  box-shadow:
+    0 30px 60px rgba(0,0,0,.55),
+    0 6px 16px rgba(0,0,0,.45);
+}
+
+.card--income .value { color: var(--income) }
+.card--expense .value{ color: var(--expense) }
+.card--balance .value{ color: var(--warning) }
+
+/* -------- Inputs (inset + 3D ring) -------- */
+.input, .select{
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  color: var(--text);
+  background: linear-gradient(180deg, #ffffff0b, #0000002b);
+  border: 1px solid #ffffff12;
+  box-shadow: 0 2px 0 #ffffff10 inset, 0 -2px 0 #0000003a inset, 0 10px 18px rgba(0,0,0,.35);
+  outline: none;
+  transition: box-shadow var(--trans), transform var(--trans);
+}
+.input:focus, .select:focus{
+  box-shadow: var(--ring), 0 2px 0 #ffffff10 inset, 0 -2px 0 #0000003a inset, 0 18px 28px rgba(0,0,0,.45);
+  transform: translateY(-1px);
+}
+
+/* -------- Buttons (pressable) -------- */
+.btn{
+  --btn-bg: linear-gradient(180deg, #7aa2ff, #4a73ff);
+  --btn-shadow: 0 12px 20px rgba(74,115,255,.45), 0 2px 0 #ffffff66 inset, 0 -2px 0 #00000055 inset;
+
+  display:inline-flex; align-items:center; justify-content:center; gap:10px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  color: white; font-weight: 700; letter-spacing:.2px;
+  background: var(--btn-bg);
+  border: none;
+  box-shadow: var(--btn-shadow);
+  cursor: pointer;
+  transform: translateY(0);
+  transition: transform var(--trans), box-shadow var(--trans), filter var(--trans);
+}
+.btn:hover{ transform: translateY(-2px) }
+.btn:active{
+  transform: translateY(1px);
+  box-shadow: 0 6px 14px rgba(74,115,255,.35), 0 1px 0 #ffffff55 inset, 0 -1px 0 #00000066 inset;
+}
+.btn--ghost{
+  background: linear-gradient(180deg, #ffffff10, #00000030);
+  color: var(--text);
+  box-shadow: 0 12px 20px rgba(0,0,0,.4), 0 2px 0 #ffffff10 inset, 0 -2px 0 #00000055 inset;
+}
+
+/* Context color variants */
+.btn--success{ --btn-bg: linear-gradient(180deg, #41d392, #1e9d6a) }
+.btn--danger { --btn-bg: linear-gradient(180deg, #ff6b7a, #d53f4c) }
+
+/* -------- Tables (elevated rows) -------- */
+.table{
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 10px;
+}
+.table thead th{
+  text-align:left; font-weight:700; color: var(--muted);
+  padding: 0 12px 6px;
+}
+.table tbody tr{
+  background: linear-gradient(180deg, #ffffff0a, #0000002a);
+  box-shadow: 0 6px 14px rgba(0,0,0,.35);
+  border: 1px solid #ffffff10;
+}
+.table tbody td{
+  padding: 12px;
+}
+.badge{
+  display:inline-block; padding:6px 10px; border-radius:999px; font-size:12px;
+  background: #ffffff10; border:1px solid #ffffff20;
+}
+.badge--in{ color: var(--income) }
+.badge--out{ color: var(--expense) }
+
+/* -------- Tiny helpers -------- */
+.row{ display:flex; gap:12px; align-items:center; }
+.spread{ display:flex; justify-content:space-between; align-items:center; gap:12px; }
+.muted{ color: var(--muted) }
+.value{ font-size:28px; font-weight:800; letter-spacing:.2px; }
+
+.separator{
+  height: 1px; background: linear-gradient(90deg, transparent, #ffffff22, transparent);
+  margin: 10px 0;
+}
+
+/* -------- Responsive -------- */
+@media (max-width: 1100px){
+  .app{ grid-template-columns: 1fr }
+  .sidebar{ order: 2 }
+  .header{ order: 1 }
+  .grid{ order: 3 }
+  .col-6, .col-8, .col-4, .col-3{ grid-column: span 12 }
+}
+
+/* -------- Fun shimmer for cards -------- */
+@keyframes shine {
+  0% { transform: translateX(-100%) }
+  100%{ transform: translateX(120%) }
+}
+.card .shine{
+  position:absolute; top:0; bottom:0; width:40%;
+  background: linear-gradient(105deg, transparent, #ffffff10 25%, transparent 50%);
+  transform: translateX(-120%);
+  animation: shine 3.5s ease-in-out infinite;
+  pointer-events:none;
+}
