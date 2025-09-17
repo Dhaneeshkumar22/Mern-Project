@@ -15,14 +15,14 @@ export default function ExpenseTrack() {
   const [expenses, setExpenses] = useState(EXPENSES);
   const [itemToEdit, setItemToEdit] = useState(null);
   useEffect(()=>{
-     axios.get ("http://localhost:3001/")
+     axios.get ("https://mern-backend-project-7.onrender.com/")
      .then((res)=> setExpenses(res.data))
     
   },[])
 
   const addExpense = (title, amount, id = null) => {
     if (id) {
-      axios.put(`http://localhost:3001/${id}`, { title, amount: Number(amount) })
+      axios.put(`https://mern-backend-project-7.onrender.com/${id}`, { title, amount: Number(amount) })
         .then((res) => {
           const updatedList = expenses.map((exp) =>
             exp._id === id ? res.data : exp
@@ -32,14 +32,14 @@ export default function ExpenseTrack() {
         })
         .catch((err) => console.error("Update error:", err));
     } else {
-      axios.post("http://localhost:3001/", { title, amount: Number(amount) })
+      axios.post("https://mern-backend-project-7.onrender.com", { title, amount: Number(amount) })
         .then((res) => setExpenses([...expenses, res.data]))
         .catch((err) => console.error("Add error:", err));
     }
   };
 
   const deleteExpense = (id) => {
-   axios.delete(`http://localhost:3001/${id}`)
+   axios.delete(`https://mern-backend-project-7.onrender.com/${id}`)
    .then(()=>{
     setExpenses(expenses.filter((exp) => exp._id !== id));
    })
